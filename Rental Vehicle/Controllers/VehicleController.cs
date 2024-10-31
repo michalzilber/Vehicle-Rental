@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Rental_Vehicle.Enties;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,59 @@ namespace Rental_Vehicle.Controllers
     [ApiController]
     public class VehicleController : ControllerBase
     {
-        // GET: api/<VehicleController>
+        private static List<Vehicle> vehicles = new List<Vehicle>{
+                new Vehicle { codeVehicle=1234, type = "Bicycle" },
+                new Vehicle {  codeVehicle=12544, type = "Scooter" }
+            };
+       
+      
+
+        // GET: api/<VaehicleController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Vehicle> Get()
         {
-            return new string[] { "value1", "value2" };
+            return vehicles;
         }
 
-        // GET api/<VehicleController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/<VaehicleController>/5
+        [HttpGet("{codeVehicle}")]
+        public string Get(int codeVehicle)
         {
-            return "value";
+            var index = vehicles.FindIndex(e => e.codeVehicle == codeVehicle);
+            if (index != -1)
+                return vehicles[index].type;
+
+            return null;
         }
 
-        // POST api/<VehicleController>
+        // POST api/<VaehicleController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Vehicle vehicle)
         {
+            vehicles.Add(vehicle);
+
         }
 
-        // PUT api/<VehicleController>/5
+        // PUT api/<VaehicleController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int codeVeicle, [FromBody] Vehicle vehicle)
         {
+            var index = vehicles.FindIndex(e => e.codeVehicle == codeVeicle);
+            if (index != -1) { }
+            vehicles[index].type = vehicle.type;
+            vehicles[index].codeVehicle = vehicle.codeVehicle;
         }
 
-        // DELETE api/<VehicleController>/5
+       //מחיקה לפי קוד
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(int codeVehicle)
         {
+            var index = vehicles.FindIndex(e => e.codeVehicle==codeVehicle);
+            if (index != -1)
+                vehicles.Remove(vehicles[index]);
+            else
+                Console.WriteLine("Not sucssed");
+
         }
     }
 }
