@@ -22,6 +22,10 @@ namespace Vehicle.Service
         {
             return _vehicleRepository.Get();
         }
+        public Vehicle GetVehicle(String type)
+        {
+            return _vehicleRepository.GetVehicle(type);
+        }
         public Vehicles addVehicle(Vehicles vehicles)
         {
             var pays = _vehicleRepository.Get();
@@ -32,10 +36,17 @@ namespace Vehicle.Service
             }
             return _vehicleRepository.Add(payment);
         }
-        public bool IsExist(string Vehicles)
+        
+        public bool UpdateVehicle(int codeVeicle, Vehicles vehicle)
+        {
+            if (!IsExist(codeVeicle))
+                return false;
+            return true;
+        }
+        public bool IsExist(int code)
         {
             var vehicles = _vehicleRepository.Get();
-            var exist = vehicles.Any(vehicles => vehicles.code == vehicles.code);
+            var exist = vehicles.Any(vehicles => vehicles.code == code);
             if (exist) { return true; }
             return false;
         }

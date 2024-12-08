@@ -60,4 +60,4 @@ namespace Vehicle.Data.Repositories
         }
     }
 }
-}
+

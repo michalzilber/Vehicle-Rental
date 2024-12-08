@@ -9,37 +9,34 @@ namespace Rental_Vehicle.Controllers
     [ApiController]
     public class VehicleController : ControllerBase
     {
+        private IVehicleService _vehicleService;
 
-
-        private readonly DataContext context;
-        public VehicleController(DataContext data)
+        public VehicleController(IVehicleService vehicleService)
         {
-            context = data;           
+          _vehicleService = vehicleService;
         }
 
         // GET: api/<VaehicleController>
         [HttpGet]
         public IEnumerable<Vehicles> Get()
         {
-            return context.vehicles;
+            _vehicleService.Get();
         }
 
         // GET api/<VaehicleController>/5
-        [HttpGet("{codeVehicle}")]
-        public string Get(int codeVehicle)
+        [HttpGet("{type}")]
+        public string Get(string type)
         {
-            var index = context.vehicles.FindIndex(e => e.code == codeVehicle);
-            if (index != -1)
-                return context.vehicles[index].type;
-
-            return null;
+            _vehicleService.GetVehicle(type);
+            
         }
+      
 
         // POST api/<VaehicleController>
         [HttpPost]
         public void Post([FromBody] Vehicles vehicle)
         {
-            context.vehicles.Add(vehicle);
+           _vehicleService.Post(vehicle);
 
         }
 
@@ -47,22 +44,16 @@ namespace Rental_Vehicle.Controllers
         [HttpPut("{id}")]
         public void Put(int codeVeicle, [FromBody] Vehicles vehicle)
         {
-            var index = context.vehicles.FindIndex(e => e.code == codeVeicle);
-            if (index != -1) { }
-             context.vehicles[index].type = vehicle.type;
-            context.vehicles[index].code = vehicle.code;
+           _vehicleService.Put(codeVeicle, vehicle);
         }
 
        //מחיקה לפי קוד
         [HttpDelete("{id}")]
-        public void Delete(int codeVehicle)
+        public ActionResult Delete(int codeVehicle)
         {
-            var index = context.vehicles.FindIndex(e => e.code==codeVehicle);
-            if (index != -1)
-                context.vehicles.Remove(context.vehicles[index]);
-            else
-                Console.WriteLine("Not sucssed");
+            
 
         }
+   
     }
 }

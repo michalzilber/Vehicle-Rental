@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Rental_Vehicle.Enties;
 
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Rental_Vehicle.Controllers
@@ -10,64 +11,71 @@ namespace Rental_Vehicle.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly DataContext context;
-        public UserController(DataContext data)
+        private IUserService _userService;
+        
+        public UserController(IUserService userService)
         {
-            context = data;
+            _userService= userService;
         }
-
 
         [HttpGet]
         public IEnumerable<User> Get()
         {
-            return context.users;
+            return _userService.Get();
         }
+
 
         //מציאת משתמש
         [HttpGet("{tel}")]
-        public User GetUser(String tel)
+        public ActionResult GetUser(String tel)
         {
-            var index = context.users.FindIndex(e => e.tel.Equals(tel));
-            if (index != -1)
-                return context.users[index];
-            return null;
+            User user = _userService.GetUser(tel);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
 
         }
-
+        
         //עדכון משתמש
         [HttpPut("{tel}")]
         public void Put(String tel, [FromBody] User value)
         {
-            var index = context.users.FindIndex(e => e.tel.Equals(tel));
-            if (index != -1)
-            {
-                context.users[index].name = value.name;
-                context.users[index].tel = value.tel;
-            }
-            Console.WriteLine("Not sucssed");
-
+           
+            _userService.Put(tel, value);
         }
 
 
         //הוספת משתמש
         [HttpPost]
-        public ActionResult Post([FromBody] User value)
+        public ActionResult Post([FromBody] User user)
         {
-            context.users.Add(value);
-            return value;
+            if (user == null)
+            {
+                return NotFound();
+            }
+            _userService.UpdateUser(user);
+            return Ok(result);
+
+            
 
         }
 
         // מחיקת משתמש
         [HttpDelete("{tel}")]
-        public void Delete(string tel)
+        public ActionResult Delete(string tel)
         {
-            var index = context.users.FindIndex(e => e.tel.Equals(tel));
-            if (index != -1)
-                context.users.Remove(context.users[index]);
-            else
-                Console.WriteLine("Not sucssed");
+            var user = _userService.GetUser(tel);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _userService.DeleteUser(tel);
+            return NoContent();
 
         }
     }
+   
 }

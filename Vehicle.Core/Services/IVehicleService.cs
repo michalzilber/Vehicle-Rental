@@ -11,6 +11,7 @@ namespace Vehicle.Core.Services
     public interface IVehicleService
     {
         public List<Vehicles> Get();
+        public Vehicle GetVehicle(String type);
         public void Post(Vehicles vehicle);
         public void Put(int codeVeicle,  Vehicles vehicle);
         public void Delete(int codeVehicle);
